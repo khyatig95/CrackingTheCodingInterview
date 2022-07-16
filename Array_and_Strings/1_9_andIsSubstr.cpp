@@ -20,9 +20,9 @@ bool myClass :: isRotation(string str1, string str2) {
     if (str1.empty() || str2.empty()) //Can't be empty
         return false;
         
-    concat = str1 + str1;
-    cout << "Concatenated string is " << concat << endl;
-    if (isSubstr(concat, str2))
+    str1.append(str1);
+    cout << "Concatenated string is " << str1 << endl;
+    if (isSubstr(str1, str2))
         return true;
     return false;
 }
