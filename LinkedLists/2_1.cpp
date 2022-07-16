@@ -44,7 +44,7 @@ bool myClass<T> :: isDup() {
                 cout << "Found duplicate and deleting node " << itr1 << endl;
                 ptr = itr1;
                 itr1 = itr1->next;
-                this->deleteNode(ptr);
+                delete ptr;
                 skip = true; //By deleting the node at itr1, we are already at itr1->next
                 break;
             } else
