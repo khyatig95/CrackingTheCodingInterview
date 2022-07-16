@@ -6,7 +6,7 @@ using namespace std;
 //Assumption:   No white spaces. Case insensitive. isOneEdit does not care about relative ordering!!!
 //Algorithm :   isOneEdit : Use an int array to store frequency of all char of longer
 //              string. Then subtract from same array for string 2.
-//              Time : O(N) where N is length of small string; Space : O(c) where c=num char
+//              Time : O(N) where N is length of longer string; Space : O(c) where c=num char
 //              OneEditType : Identifies if the two strings are one edit away and type of edit.
 //              Time : O(N);    Space : O(1)
 
