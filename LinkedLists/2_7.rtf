@@ -1,0 +1,220 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1348\cocoasubrtf170
+{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;\f1\fnil\fcharset0 Menlo-Bold;}
+{\colortbl;\red255\green255\blue255;\red63\green127\blue95;\red127\green0\blue85;\red42\green0\blue255;
+}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720
+
+\f0\fs24 \cf2 //Algorithm  :  haveIntersection : If tail nodes (NOT DATA) are same => they intersect\cf0 \
+\cf2 //              findIntersection : If the two lists intersect, chop head of longer list \cf0 \
+\cf2 //              till it matches length of shorter list and then find where nodes are same.\cf0 \
+\cf2 //              Time Complexity : O(N) where N is length of longer list; \cf0 \
+\cf2 //              Space Complexity : O(1)\cf0 \
+\
+\pard\pardeftab720
+
+\f1\b \cf3 using
+\f0\b0 \cf0  
+\f1\b \cf3 namespace
+\f0\b0 \cf0  std;\
+
+\f1\b \cf3 #include
+\f0\b0 \cf0  \cf4 <iostream>\cf0 \
+
+\f1\b \cf3 #include
+\f0\b0 \cf0  \cf4 "LinkedList.h"\cf0 \
+\
+
+\f1\b \cf3 template
+\f0\b0 \cf0  <
+\f1\b \cf3 typename
+\f0\b0 \cf0  T>\
+
+\f1\b \cf3 class
+\f0\b0 \cf0  myClass \{\
+    
+\f1\b \cf3 public
+\f0\b0 \cf0  :\
+            
+\f1\b \cf3 bool
+\f0\b0 \cf0  haveIntersection(LinkedList<T> lis1, LinkedList<T> lis2);\
+            Node<T>* findIntersection(LinkedList<T> lis1, LinkedList<T> lis2);\
+            
+\f1\b \cf3 int
+\f0\b0 \cf0  findLength(LinkedList<T> lis);\
+\};\
+\
+
+\f1\b \cf3 template
+\f0\b0 \cf0  <
+\f1\b \cf3 typename
+\f0\b0 \cf0  T>\
+
+\f1\b \cf3 bool
+\f0\b0 \cf0  myClass<T> :: haveIntersection(LinkedList<T> lis1, LinkedList<T> lis2) \{\
+    Node<T>* n1 = lis1.head;\
+    Node<T>* n2 = lis2.head;\
+\
+    
+\f1\b \cf3 if
+\f0\b0 \cf0  (lis1.head == NULL || lis2.head == NULL) \{\
+        cout << \cf4 "ERROR: One or more input lists are empty"\cf0  << endl;\
+        
+\f1\b \cf3 return
+\f0\b0 \cf0  
+\f1\b \cf3 false
+\f0\b0 \cf0 ;\
+    \}\
+    
+\f1\b \cf3 while
+\f0\b0 \cf0  ((n1->next != NULL) || (n2->next != NULL)) \{\
+        
+\f1\b \cf3 if
+\f0\b0 \cf0  (n1->next != NULL)\
+            n1 = n1->next;\
+        
+\f1\b \cf3 if
+\f0\b0 \cf0  (n2->next != NULL)\
+            n2 = n2->next;\
+    \}\
+    
+\f1\b \cf3 if
+\f0\b0 \cf0  (n1 == n2)\
+        
+\f1\b \cf3 return
+\f0\b0 \cf0  
+\f1\b \cf3 true
+\f0\b0 \cf0 ;\
+    
+\f1\b \cf3 else
+\f0\b0 \cf0  \
+        
+\f1\b \cf3 return
+\f0\b0 \cf0  
+\f1\b \cf3 false
+\f0\b0 \cf0 ;\
+\}\
+\
+
+\f1\b \cf3 template
+\f0\b0 \cf0  <
+\f1\b \cf3 typename
+\f0\b0 \cf0  T>            \
+Node<T>* myClass<T> :: findIntersection(LinkedList<T> lis1, LinkedList<T> lis2) \{\
+    
+\f1\b \cf3 int
+\f0\b0 \cf0  len1 = findLength(lis1);\
+    
+\f1\b \cf3 int
+\f0\b0 \cf0  len2 = findLength(lis2);\
+    \
+    
+\f1\b \cf3 while
+\f0\b0 \cf0  (len1 != len2) \{\
+        
+\f1\b \cf3 if
+\f0\b0 \cf0  (len1 > len2) \{\
+            lis1.deleteNode(lis1.head);\
+            len1--;\
+        \} 
+\f1\b \cf3 else
+\f0\b0 \cf0  \{\
+            lis2.deleteNode(lis2.head);\
+            len2--;\
+        \}\
+    \}\
+    \
+    Node<T>* n1 = lis1.head;\
+    Node<T>* n2 = lis2.head;\
+    
+\f1\b \cf3 if
+\f0\b0 \cf0  (n1 == n2) \{\
+        cout << \cf4 "Found intersection at "\cf0  << n1->data << endl;\
+        
+\f1\b \cf3 return
+\f0\b0 \cf0  n1;\
+    \}\
+    
+\f1\b \cf3 while
+\f0\b0 \cf0  (n1->next != NULL) \{\
+        
+\f1\b \cf3 if
+\f0\b0 \cf0  (n1->next == n2->next)\{ \
+            cout << \cf4 "Found intersection at "\cf0  << n1->next->data << endl;\
+            
+\f1\b \cf3 return
+\f0\b0 \cf0  n1->next;\
+        \}\
+        n1 = n1->next;\
+        n2 = n2->next;\
+    \}\
+    
+\f1\b \cf3 return
+\f0\b0 \cf0  NULL;\
+\}\
+\
+
+\f1\b \cf3 template
+\f0\b0 \cf0  <
+\f1\b \cf3 typename
+\f0\b0 \cf0  T>\
+
+\f1\b \cf3 int
+\f0\b0 \cf0  myClass<T> :: findLength(LinkedList<T> lis) \{\
+    Node<T>* n = lis.head;\
+    
+\f1\b \cf3 int
+\f0\b0 \cf0  length = 0;\
+    
+\f1\b \cf3 while
+\f0\b0 \cf0  (n->next != NULL) \{\
+        length++;\
+        n = n->next;\
+    \}\
+    length++; \cf2 //For head\cf0 \
+    
+\f1\b \cf3 return
+\f0\b0 \cf0 (length);\
+\}\
+\
+
+\f1\b \cf3 int
+\f0\b0 \cf0  main() \{\
+    \
+    LinkedList<
+\f1\b \cf3 int
+\f0\b0 \cf0 > lis1, lis2, lis3; \
+    myClass<
+\f1\b \cf3 int
+\f0\b0 \cf0 > obj;\
+    lis3.insertNode(1);\
+    lis3.insertNode(2);\
+    lis3.insertNode(7);\
+    lis1 = lis3;\
+    lis2 = lis3;\
+    lis1.insertNode(9);  \
+    lis1.insertNode(5);  \
+    lis1.insertNode(1);\
+    lis1.insertNode(3); \
+    lis2.insertNode(6);\
+    lis2.insertNode(4);\
+    cout << \cf4 "List1:"\cf0  << endl;\
+    lis1.printLinkedList();\
+    cout << \cf4 "List2:"\cf0  << endl;\
+    lis2.printLinkedList();    \
+    \
+    
+\f1\b \cf3 if
+\f0\b0 \cf0  (obj.haveIntersection(lis1, lis2)) \{\
+        cout << \cf4 "Both Lists have Intersection"\cf0  << endl;\
+        cout << \cf4 "Intersection at "\cf0  << obj.findIntersection(lis1, lis2)->data << endl;\
+    \} 
+\f1\b \cf3 else
+\f0\b0 \cf0  \
+        cout << \cf4 "Both Lists do NOT have Intersection"\cf0  << endl;\
+    
+\f1\b \cf3 return
+\f0\b0 \cf0  0;\
+\}\
+}

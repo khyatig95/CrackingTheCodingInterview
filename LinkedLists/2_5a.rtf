@@ -1,0 +1,219 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1348\cocoasubrtf170
+{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;\f1\fnil\fcharset0 Menlo-Bold;}
+{\colortbl;\red255\green255\blue255;\red63\green127\blue95;\red127\green0\blue85;\red42\green0\blue255;
+\red0\green80\blue50;\red0\green0\blue192;}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720
+
+\f0\fs24 \cf2 //Algorithm  :  doSum : Add elements with corresponding positions in both\cf0 \
+\cf2 //              lists and keep inserting at tail for result list \cf0 \
+\cf2 //              Head has 1's place, head->next has 10's place ...\cf0 \
+\cf2 //              Time Complexity : O(N) where N is the longer list length; Space Complexity : O(1)\cf0 \
+\pard\pardeftab720
+
+\f1\b \cf3 using
+\f0\b0 \cf0  
+\f1\b \cf3 namespace
+\f0\b0 \cf0  std;\
+
+\f1\b \cf3 #include
+\f0\b0 \cf0  \cf4 <iostream>\cf0 \
+\pard\pardeftab720
+
+\f1\b \cf3 \ul \ulc3 #include
+\f0\b0 \cf0 \ulc0  \cf4 \ulc4 "LinkedList.h"\cf0 \ulnone \
+\
+\pard\pardeftab720
+
+\f1\b \cf3 class
+\f0\b0 \cf0  \cf5 myClass\cf0  \{\
+    
+\f1\b \cf3 public
+\f0\b0 \cf0  :\
+            
+\f1\b \cf3 void
+\f0\b0 \cf0  
+\f1\b doSum
+\f0\b0 (\ul Node<
+\f1\b \cf3 \ulc3 int
+\f0\b0 \cf0 \ulc0 >\ulnone * n1, \ul Node<
+\f1\b \cf3 \ulc3 int
+\f0\b0 \cf0 \ulc0 >\ulnone * n2, 
+\f1\b \cf3 int
+\f0\b0 \cf0  carry);\
+            \ul LinkedList<
+\f1\b \cf3 \ulc3 int
+\f0\b0 \cf0 \ulc0 >\ulnone  \cf6 Res\cf0 ;\
+            \ul Node<
+\f1\b \cf3 \ulc3 int
+\f0\b0 \cf0 \ulc0 >\ulnone * \cf6 lastNode\cf0  = NULL;\
+\};\
+\
+
+\f1\b \cf3 void
+\f0\b0 \cf0  
+\f1\b myClass :: doSum
+\f0\b0 (\ul Node<
+\f1\b \cf3 \ulc3 int
+\f0\b0 \cf0 \ulc0 >\ulnone * n1, \ul Node<
+\f1\b \cf3 \ulc3 int
+\f0\b0 \cf0 \ulc0 >\ulnone * n2, 
+\f1\b \cf3 int
+\f0\b0 \cf0  carry) \{\
+    \ul Node<
+\f1\b \cf3 \ulc3 int
+\f0\b0 \cf0 \ulc0 >\ulnone * n  = 
+\f1\b \cf3 new
+\f0\b0 \cf0  \ul Node<
+\f1\b \cf3 \ulc3 int
+\f0\b0 \cf0 \ulc0 >\ulnone ();  \cf2 //We \cf2 \ul \ulc2 cant\cf2 \ulnone  use insert function as that adds to head.\cf0 \
+    \ul Node<
+\f1\b \cf3 \ulc3 int
+\f0\b0 \cf0 \ulc0 >\ulnone * ptr1;\
+    \ul Node<
+\f1\b \cf3 \ulc3 int
+\f0\b0 \cf0 \ulc0 >\ulnone * ptr2;\
+    
+\f1\b \cf3 int
+\f0\b0 \cf0  currVal = 0;\
+    
+\f1\b \cf3 int
+\f0\b0 \cf0  carryNext;\
+  \
+    
+\f1\b \cf3 if
+\f0\b0 \cf0  (n1 == NULL && n2 == NULL) \{\
+	cout << \cf4 "ERROR : Both input sum lists are empty!!"\cf0  << endl;\
+	
+\f1\b \cf3 return
+\f0\b0 \cf0 ;\
+    \}\
+    cout << \cf4 "Adding "\cf0 ;\
+    
+\f1\b \cf3 if
+\f0\b0 \cf0  (n1 != NULL) \{\
+        cout << n1->\ul data\ulnone  << \cf4 " to "\cf0 ;\
+        currVal += n1->\ul data\ulnone ;\
+    \}\
+    
+\f1\b \cf3 if
+\f0\b0 \cf0  (n2 != NULL) \{\
+        cout << n2->\ul data\ulnone  << \cf4 " and "\cf0 ;\
+        currVal += n2->\ul data\ulnone ;\
+    \}\
+    cout << carry << endl;\
+    currVal += carry;\
+    \
+    n->\ul data\ulnone  = currVal%10;\
+    n->\ul next\ulnone  = NULL;\
+    carryNext = (currVal >= 10) ? 1 : 0;\
+\
+    \cf2 //Insert at tail\cf0 \
+    
+\f1\b \cf3 if
+\f0\b0 \cf0  (\cf6 lastNode\cf0  == NULL) \{ \cf2 //first element\cf0 \
+        \cf6 lastNode\cf0  = n;\
+        \cf6 Res\cf0 .\ul head\ulnone  = n;\
+    \} 
+\f1\b \cf3 else
+\f0\b0 \cf0  \{\
+        \cf6 lastNode\cf0 ->\ul next\ulnone  = n;\
+        \cf6 lastNode\cf0  = n;\
+    \}\
+    cout << \cf4 "lastNode data is "\cf0  << \cf6 lastNode\cf0 ->\ul data\ulnone  << \ul endl\ulnone ;\
+    \
+    
+\f1\b \cf3 if
+\f0\b0 \cf0  (n1 == NULL) \
+        ptr1 = NULL;\
+    
+\f1\b \cf3 else
+\f0\b0 \cf0 \
+        ptr1 = n1->\ul next\ulnone ;\
+        \
+    
+\f1\b \cf3 if
+\f0\b0 \cf0  (n2 == NULL)\
+        ptr2 = NULL;\
+    
+\f1\b \cf3 else
+\f0\b0 \cf0 \
+        ptr2 = n2->\ul next\ulnone ;\
+        \
+    
+\f1\b \cf3 if
+\f0\b0 \cf0  ((ptr1 != NULL) && (ptr2 != NULL)) \{\
+        cout << \cf4 "CASE1"\cf0  << endl; \
+        \ul doSum\ulnone (n1->\ul next\ulnone , n2->\ul next\ulnone , carryNext);\
+    \} 
+\f1\b \cf3 else
+\f0\b0 \cf0  
+\f1\b \cf3 if
+\f0\b0 \cf0  (ptr1 != NULL) \{\
+        cout << \cf4 "CASE2"\cf0  << endl; \
+        \ul doSum\ulnone (n1->\ul next\ulnone , NULL, carryNext);\
+    \} 
+\f1\b \cf3 else
+\f0\b0 \cf0  
+\f1\b \cf3 if
+\f0\b0 \cf0  (ptr2 != NULL) \{\
+        cout << \cf4 "CASE3"\cf0  << endl; \
+        \ul doSum\ulnone (NULL, n2->\ul next\ulnone , carryNext);\
+    \} 
+\f1\b \cf3 else
+\f0\b0 \cf0  \{\
+        cout << \cf4 "CASE4"\cf0  << endl; \
+        
+\f1\b \cf3 if
+\f0\b0 \cf0  (carryNext == 1) \{\
+            cout << \cf4 "Inserting carry as the last element"\cf0  << endl;\
+            \ul Node<
+\f1\b \cf3 \ulc3 int
+\f0\b0 \cf0 \ulc0 >\ulnone * n_new = 
+\f1\b \cf3 new
+\f0\b0 \cf0  \ul Node<
+\f1\b \cf3 \ulc3 int
+\f0\b0 \cf0 \ulc0 >\ulnone ();\
+            n_new->\ul data\ulnone  = carryNext;\
+            n_new->\ul next\ulnone  = NULL;\
+            \cf6 lastNode\cf0 ->\ul next\ulnone  = n_new;\
+            \cf6 lastNode\cf0  = n_new;\
+        \}\
+        
+\f1\b \cf3 return
+\f0\b0 \cf0 ;\
+    \}\
+\}\
+\
+
+\f1\b \cf3 int
+\f0\b0 \cf0  
+\f1\b main
+\f0\b0 () \{\
+    \ul LinkedList<
+\f1\b \cf3 \ulc3 int
+\f0\b0 \cf0 \ulc0 >\ulnone  lis1;\
+    \ul LinkedList<
+\f1\b \cf3 \ulc3 int
+\f0\b0 \cf0 \ulc0 >\ulnone  lis2;\
+    \cf5 myClass\cf0  obj;\
+    lis1.\ul insertNode\ulnone (6);\
+    lis1.\ul insertNode\ulnone (1);\
+    lis1.\ul insertNode\ulnone (7);\
+    lis2.\ul insertNode\ulnone (9); \
+    lis2.\ul insertNode\ulnone (9);  \
+    lis2.\ul insertNode\ulnone (5);\
+    lis2.\ul insertNode\ulnone (3); \
+    cout << \cf4 "Original List1:"\cf0  << endl;\
+    lis1.\ul printLinkedList\ulnone ();\
+    cout << \cf4 "Original List2:"\cf0  << endl;\
+    lis2.\ul printLinkedList\ulnone ();\
+    obj.\ul doSum\ulnone (lis1.\ul head\ulnone , lis2.\ul head\ulnone , 0);\
+    cout << \cf4 "Sum List:"\cf0  << endl;\
+    obj.\cf6 Res\cf0 .\ul printLinkedList\ulnone ();\
+    
+\f1\b \cf3 return
+\f0\b0 \cf0  0;\
+\}\
+}

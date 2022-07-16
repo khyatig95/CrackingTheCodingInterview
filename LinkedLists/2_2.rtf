@@ -1,0 +1,402 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1348\cocoasubrtf170
+{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;\f1\fnil\fcharset0 Menlo-Bold;}
+{\colortbl;\red255\green255\blue255;\red63\green127\blue95;\red127\green0\blue85;\red42\green0\blue255;
+\red100\green70\blue50;\red0\green80\blue50;\red0\green0\blue192;\red85\green142\blue40;}
+\margl1440\margr1440\vieww28300\viewh14680\viewkind0
+\deftab720
+\pard\pardeftab720
+
+\f0\fs24 \cf2 //Assumption :  Linked list is made of integers. 0th from last = last, ..\cf0 \
+\cf2 //Algorithm  :  findFromLast : Calculates length and returns (Length-K) from the front\cf0 \
+\cf2 //              Time Complexity : O(N) ; Space Complexity : O(K) due to recursion\cf0 \
+\cf2 //              findFromLastIter : 2 pointers, K apart. When the farther pointer is at \cf0 \
+\cf2 //              end, the other pointer is at \cf2 \ul \ulc2 Kth\cf2 \ulnone  from last element\cf0 \
+\cf2 //              Time Complexity : O(N)  ; Space Complexity : O(1)\cf0 \
+\cf2 //              findFromLastRecur : Recursive function that returns index from last\cf0 \
+\cf2 //              Time Complexity : O(N) ; Space Complexity : O(N)\cf0 \
+\
+\pard\pardeftab720
+
+\f1\b \cf3 #include
+\f0\b0 \cf0  \cf4 <iostream>\cf0  \
+
+\f1\b \cf3 #include
+\f0\b0 \cf0  \cf4 <unordered_set>\cf0 \
+\pard\pardeftab720
+
+\f1\b \cf3 \ul \ulc3 #include
+\f0\b0 \cf0 \ulc0  \cf4 \ulc4 "LinkedList.h"\cf0 \ulnone \
+\
+\pard\pardeftab720
+
+\f1\b \cf3 using
+\f0\b0 \cf0  
+\f1\b \cf3 namespace
+\f0\b0 \cf0  std; \
+\
+
+\f1\b \cf3 template
+\f0\b0 \cf0  <
+\f1\b \cf3 typename
+\f0\b0 \cf0  
+\f1\b \cf5 T
+\f0\b0 \cf0 >\
+
+\f1\b \cf3 class
+\f0\b0 \cf0  \cf6 myClass\cf0  : 
+\f1\b \cf3 public
+\f0\b0 \cf0  \ul LinkedList<
+\f1\b \cf5 \ulc5 T
+\f0\b0 \cf0 \ulc0 >\ulnone  \{\
+    
+\f1\b \cf3 public
+\f0\b0 \cf0  :\
+        
+\f1\b \cf5 T
+\f0\b0 \cf0  
+\f1\b findFromLast
+\f0\b0 (
+\f1\b \cf3 int
+\f0\b0 \cf0  k);\
+        
+\f1\b \cf5 T
+\f0\b0 \cf0  
+\f1\b findFromLastIter
+\f0\b0 (
+\f1\b \cf3 int
+\f0\b0 \cf0  k);\
+        
+\f1\b \cf5 T
+\f0\b0 \cf0  
+\f1\b findFromLastRecur
+\f0\b0 (
+\f1\b \cf3 int
+\f0\b0 \cf0  k);\
+        
+\f1\b \cf3 int
+\f0\b0 \cf0  
+\f1\b returnIndex
+\f0\b0 (\ul Node<
+\f1\b \cf5 \ulc5 T
+\f0\b0 \cf0 \ulc0 >\ulnone * n, 
+\f1\b \cf3 int
+\f0\b0 \cf0  k);\
+        
+\f1\b \cf3 int
+\f0\b0 \cf0  
+\f1\b findLength
+\f0\b0 ();\
+        \ul Node<
+\f1\b \cf5 \ulc5 T
+\f0\b0 \cf0 \ulc0 >\ulnone * \cf7 KfromLast\cf0  = NULL;\
+\};\
+\
+
+\f1\b \cf3 template
+\f0\b0 \cf0  <
+\f1\b \cf3 typename
+\f0\b0 \cf0  
+\f1\b \cf5 T
+\f0\b0 \cf0 >\
+
+\f1\b \cf3 int
+\f0\b0 \cf0  
+\f1\b myClass<T> :: findLength
+\f0\b0 () \{\
+    \ul Node<
+\f1\b \cf5 \ulc5 T
+\f0\b0 \cf0 \ulc0 >\ulnone * n = 
+\f1\b \cf3 this
+\f0\b0 \cf0 ->\ul head\ulnone ;\
+    
+\f1\b \cf3 int
+\f0\b0 \cf0  length = 0;\
+    
+\f1\b \cf3 while
+\f0\b0 \cf0  (n->\ul next\ulnone  != NULL) \{\
+        length++;\
+        n = n->\ul next\ulnone ;\
+    \}\
+    length++; \cf2 //For head\cf0 \
+    
+\f1\b \cf3 return
+\f0\b0 \cf0 (length);\
+\}\
+\
+
+\f1\b \cf3 template
+\f0\b0 \cf0  <
+\f1\b \cf3 typename
+\f0\b0 \cf0  
+\f1\b \cf5 T
+\f0\b0 \cf0 >\
+\pard\pardeftab720
+
+\f1\b \cf5 T
+\f0\b0 \cf0  
+\f1\b myClass<T> :: findFromLast
+\f0\b0 (
+\f1\b \cf3 int
+\f0\b0 \cf0  k) \{\
+    \ul Node<
+\f1\b \cf5 \ulc5 T
+\f0\b0 \cf0 \ulc0 >\ulnone * n = 
+\f1\b \cf3 this
+\f0\b0 \cf0 ->\ul head\ulnone ;\
+    
+\f1\b \cf3 int
+\f0\b0 \cf0  front_index, length;\
+    
+\f1\b \cf3 if
+\f0\b0 \cf0  (
+\f1\b \cf3 this
+\f0\b0 \cf0 ->\ul head\ulnone  == NULL) \{\
+        cout << \cf4 "List is empty!"\cf0  << endl;\
+        
+\f1\b \cf3 return
+\f0\b0 \cf0  -1;\
+    \}\
+    length = findLength();\
+    cout << \cf4 "Length of linked list is "\cf0  << length << endl;\
+    front_index = length - 1 - k;\
+    
+\f1\b \cf3 if
+\f0\b0 \cf0  (front_index < 0) \{\
+        cout << \cf4 "k = "\cf0  << k << \cf4 " is greater than length of linked list "\cf0  << length << endl;\
+        
+\f1\b \cf3 return
+\f0\b0 \cf0  -1;\
+    \} 
+\f1\b \cf3 else
+\f0\b0 \cf0  
+\f1\b \cf3 if
+\f0\b0 \cf0  (front_index == 0) \
+        
+\f1\b \cf3 return
+\f0\b0 \cf0  
+\f1\b \cf3 this
+\f0\b0 \cf0 ->\ul head\ulnone ->\cf7 data\cf0 ;\
+    
+\f1\b \cf3 else
+\f0\b0 \cf0  \{\
+        
+\f1\b \cf3 while
+\f0\b0 \cf0 (n->\ul next\ulnone  != NULL) \{\
+            front_index--; \cf2 //Account for head\cf0 \
+            cout << \cf4 "Front index = "\cf0  << front_index << \cf4 " for data = "\cf0  << n->\ul next\ulnone ->\ul data\ulnone  << \ul endl\ulnone ;\
+            
+\f1\b \cf3 if
+\f0\b0 \cf0  (front_index == 0)\
+                
+\f1\b \cf3 break
+\f0\b0 \cf0 ;\
+            n = n->\ul next\ulnone ;\
+        \}\
+    \}\
+    
+\f1\b \cf3 return
+\f0\b0 \cf0  n->\ul next\ulnone ->\ul data\ulnone ;\
+\}\
+\
+\pard\pardeftab720
+
+\f1\b \cf3 template
+\f0\b0 \cf0  <
+\f1\b \cf3 typename
+\f0\b0 \cf0  
+\f1\b \cf5 T
+\f0\b0 \cf0 >\
+\pard\pardeftab720
+
+\f1\b \cf5 T
+\f0\b0 \cf0  
+\f1\b myClass<T> :: findFromLastIter
+\f0\b0 (
+\f1\b \cf3 int
+\f0\b0 \cf0  k) \{\
+    \ul Node<
+\f1\b \cf5 \ulc5 T
+\f0\b0 \cf0 \ulc0 >\ulnone * slow = 
+\f1\b \cf3 this
+\f0\b0 \cf0 ->\ul head\ulnone ; \
+    \ul Node<
+\f1\b \cf5 \ulc5 T
+\f0\b0 \cf0 \ulc0 >\ulnone * fast = 
+\f1\b \cf3 this
+\f0\b0 \cf0 ->\ul head\ulnone ; \
+    
+\f1\b \cf3 int
+\f0\b0 \cf0  count = k;\
+    \
+    
+\f1\b \cf3 if
+\f0\b0 \cf0  (
+\f1\b \cf3 this
+\f0\b0 \cf0 ->\ul head\ulnone  == NULL) \{\
+        cout << \cf4 "List is empty!"\cf0  << endl;\
+        
+\f1\b \cf3 return
+\f0\b0 \cf0  -1;\
+    \}\
+    
+\f1\b \cf3 while
+\f0\b0 \cf0 (fast->\ul next\ulnone  != NULL) \{\
+        cout << \cf4 "fast is at "\cf0  << fast->\ul data\ulnone  << \cf4 " and slow is at "\cf0  << slow->\ul data\ulnone  << \ul endl\ulnone ;\
+\pard\pardeftab720
+\cf8 	   //We dont reset count as after the first separation, both pointer move together.\
+\cf0         
+\f1\b \cf3 if
+\f0\b0 \cf0  (count == 0)\
+            slow = slow->\ul next\ulnone ;\
+        
+\f1\b \cf3 else
+\f0\b0 \cf0  \
+            count --;\
+        fast = fast->\ul next\ulnone ;\
+    \}\
+    cout << \cf4 "fast is at "\cf0  << fast->\ul data\ulnone  << \cf4 " and slow is at "\cf0  << slow->\ul data\ulnone  << \ul endl\ulnone ;\
+\
+    cout << \cf4 "slow is at "\cf0  << slow->\ul data\ulnone  << \ul endl\ulnone ;\
+    
+\f1\b \cf3 if
+\f0\b0 \cf0  (count != 0) \cf2 //Slow has not started moving, => k > length of \cf2 \ul \ulc2 linkedlist\cf0 \ulnone \
+        
+\f1\b \cf3 return
+\f0\b0 \cf0  -1;\
+    
+\f1\b \cf3 return
+\f0\b0 \cf0 (slow->\ul data\ulnone );\
+\}\
+\
+\pard\pardeftab720
+
+\f1\b \cf3 template
+\f0\b0 \cf0  <
+\f1\b \cf3 typename
+\f0\b0 \cf0  
+\f1\b \cf5 T
+\f0\b0 \cf0 >\
+\pard\pardeftab720
+
+\f1\b \cf5 T
+\f0\b0 \cf0  
+\f1\b myClass<T> :: findFromLastRecur
+\f0\b0 (
+\f1\b \cf3 int
+\f0\b0 \cf0  k) \{\
+    
+\f1\b \cf3 if
+\f0\b0 \cf0  (
+\f1\b \cf3 this
+\f0\b0 \cf0 ->\ul head\ulnone  == NULL) \{\
+        cout << \cf4 "List is empty!"\cf0  << endl;\
+        
+\f1\b \cf3 return
+\f0\b0 \cf0  -1;\
+    \}\
+    \
+    
+\f1\b \cf3 int
+\f0\b0 \cf0  index = returnIndex(
+\f1\b \cf3 this
+\f0\b0 \cf0 ->\ul head\ulnone , k);\
+\
+    
+\f1\b \cf3 if
+\f0\b0 \cf0  (\cf7 KfromLast\cf0  != NULL)\
+        
+\f1\b \cf3 return
+\f0\b0 \cf0  \cf7 KfromLast\cf0 ->\ul data\ulnone ;\
+    
+\f1\b \cf3 else
+\f0\b0 \cf0  \
+        
+\f1\b \cf3 return
+\f0\b0 \cf0  -1;\
+\}\
+\
+\pard\pardeftab720
+
+\f1\b \cf3 template
+\f0\b0 \cf0  <
+\f1\b \cf3 typename
+\f0\b0 \cf0  
+\f1\b \cf5 T
+\f0\b0 \cf0 >\
+
+\f1\b \cf3 int
+\f0\b0 \cf0  
+\f1\b myClass<T> :: returnIndex
+\f0\b0 (\ul Node<
+\f1\b \cf5 \ulc5 T
+\f0\b0 \cf0 \ulc0 >\ulnone * n, 
+\f1\b \cf3 int
+\f0\b0 \cf0  k) \{\
+    
+\f1\b \cf3 int
+\f0\b0 \cf0  index = 0;\
+    
+\f1\b \cf3 if
+\f0\b0 \cf0  (n->\ul next\ulnone  == NULL) \{\cf2 //last element\cf0 \
+        
+\f1\b \cf3 if
+\f0\b0 \cf0  (index == k) \{\
+            \cf7 KfromLast\cf0  = n;\
+            cout << \cf4 "Found element "\cf0  << n->\ul data\ulnone  << \ul endl\ulnone ;\
+        \}\
+        
+\f1\b \cf3 return
+\f0\b0 \cf0  index;\
+    \}\
+      \
+    index = \ul returnIndex\ulnone (n->\ul next\ulnone , k) + 1;\
+    
+\f1\b \cf3 if
+\f0\b0 \cf0  (index == k) \{\
+        \cf7 KfromLast\cf0  = n;\
+        cout << \cf4 "Found element "\cf0  << n->\ul data\ulnone  << \ul endl\ulnone ;\
+    \}\
+    
+\f1\b \cf3 return
+\f0\b0 \cf0  index;\
+\}\
+\
+
+\f1\b \cf3 int
+\f0\b0 \cf0  
+\f1\b main
+\f0\b0 () \{\
+    
+\f1\b \cf3 int
+\f0\b0 \cf0  Kth;\
+    Kth = 3; \cf2 //some middle element\cf0 \
+    \cf2 //\cf2 \ul \ulc2 Kth\cf2 \ulnone  = 6; //first element\cf0 \
+    \cf2 //\cf2 \ul \ulc2 Kth\cf2 \ulnone = 7; //error\cf0 \
+    \cf2 //\cf2 \ul \ulc2 Kth\cf2 \ulnone  = 0; //last element\cf0 \
+    \cf6 myClass\cf0 <
+\f1\b \cf3 int
+\f0\b0 \cf0 > lis;\
+    lis.\ul insertNode\ulnone (10);\
+    lis.\ul insertNode\ulnone (20);\
+    lis.\ul insertNode\ulnone (100);\
+    lis.\ul insertNode\ulnone (23);\
+    lis.\ul insertNode\ulnone (60);\
+    lis.\ul insertNode\ulnone (90); \
+    lis.\ul insertNode\ulnone (70);\
+    lis.\ul printLinkedList\ulnone ();\
+    
+\f1\b \cf3 int
+\f0\b0 \cf0  result = lis.findFromLast(Kth);\
+\
+    
+\f1\b \cf3 if
+\f0\b0 \cf0  (result == -1) \
+        cout << \cf4 "Linked List has an error for k "\cf0  <<  Kth << endl;\
+    
+\f1\b \cf3 else
+\f0\b0 \cf0  \
+        cout << \cf4 "Linked List has "\cf0  << result << \cf4 " at "\cf0  << Kth << \cf4 " from last"\cf0  << endl;\
+    
+\f1\b \cf3 return
+\f0\b0 \cf0  0;\
+\}}
