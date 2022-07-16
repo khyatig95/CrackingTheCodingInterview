@@ -76,7 +76,7 @@ bool myClass<T> :: isDupHash() {
             temp = n->next;
             n->next = n->next->next;
             cout << "Delete Node " << temp << " with val " << temp->data << endl;
-            this->deleteNode(temp);
+            delete temp;
         } else {
             uset.insert(n->next->data);
             cout << "Added " << n->next->data << " to the uset" << endl;
