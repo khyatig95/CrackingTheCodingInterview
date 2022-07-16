@@ -1,0 +1,158 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1348\cocoasubrtf170
+{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;\f1\fnil\fcharset0 Menlo-Bold;}
+{\colortbl;\red255\green255\blue255;\red63\green127\blue95;\red127\green0\blue85;\red42\green0\blue255;
+\red0\green80\blue50;\red100\green40\blue128;}
+\margl1440\margr1440\vieww28300\viewh14680\viewkind0
+\deftab720
+\pard\pardeftab720
+
+\f0\fs24 \cf2 //Assumption :  Assuming only +\ul \ulc2 ve\ulnone  integers to avoid complications with shift\cf0 \
+\cf2 //Algorithm :   GetNext = Scan from LSB to MSB. Flip the first non-streaming (should have 1's in LSB) 0 at position p to 1. \cf0 \
+\cf2 //              Then clear 0 to p-1. Insert all (x-1) 1's at the LSB positions where x=original number of 1's between 0 and p-1\cf0 \
+\cf2 //              GetPrev = Scan from LSB to MSB. Flip the first non-streaming 1 at position p to 0.\cf0 \
+\cf2 //              Then clear 0 to p-1. Insert all (x+1) 1's at the MSB position of the cleared area.\cf0 \
+\cf2 //              getNumBin : Binary Manipulation to get the desired numbers\cf0 \
+\cf2 //              getNumArith : Arithmetic Manipulation to get the desired numbers\cf0 \
+\
+\pard\pardeftab720
+
+\f1\b \cf3 using
+\f0\b0 \cf0  
+\f1\b \cf3 namespace
+\f0\b0 \cf0  std;\
+
+\f1\b \cf3 #include
+\f0\b0 \cf0  \cf4 <iostream>\cf0 \
+
+\f1\b \cf3 #include
+\f0\b0 \cf0  \cf4 <vector>\cf0 \
+\pard\pardeftab720
+
+\f1\b \cf3 \ul \ulc3 #include
+\f0\b0 \cf0 \ulc0  \cf4 \ulc4 "helper.h"\cf0 \ulnone \
+\pard\pardeftab720
+
+\f1\b \cf3 #include
+\f0\b0 \cf0  \cf4 <math.h>\cf0 \
+\
+
+\f1\b \cf3 class
+\f0\b0 \cf0  \cf5 myClass\cf0  : 
+\f1\b \cf3 public
+\f0\b0 \cf0  \ul helper\ulnone  \{\
+    
+\f1\b \cf3 public
+\f0\b0 \cf0  :\
+        
+\f1\b \cf3 void
+\f0\b0 \cf0  
+\f1\b getNumBin
+\f0\b0 (
+\f1\b \cf3 int
+\f0\b0 \cf0  num);\
+        
+\f1\b \cf3 void
+\f0\b0 \cf0  
+\f1\b getNumArith
+\f0\b0 (
+\f1\b \cf3 int
+\f0\b0 \cf0  num);\
+\};\
+\
+
+\f1\b \cf3 void
+\f0\b0 \cf0  
+\f1\b myClass :: getNumBin
+\f0\b0 (
+\f1\b \cf3 int
+\f0\b0 \cf0  num) \{\
+    
+\f1\b \cf3 int
+\f0\b0 \cf0  val = num;\
+    
+\f1\b \cf3 int
+\f0\b0 \cf0  index, mask;\
+    \ul createCountArray\ulnone (num); \cf2 //Create the count Array\cf0 \
+    \
+    \cf2 //GetNext\cf0 \
+    index = \ul vec\ulnone [0] + \ul vec\ulnone [1];    \cf2 //Position of the first non-streaming 0\cf0 \
+    val = val + 
+\f1\b \cf6 pow
+\f0\b0 \cf0 (2, index);      \cf2 //Set the index location from 0 to 1\cf0 \
+    mask = 
+\f1\b \cf6 pow
+\f0\b0 \cf0 (2, index) - 1;   \
+    mask = ~mask;                   \
+    val = val&mask;                 \cf2 //Clear out bits from 0 to (index-1)\cf0 \
+    mask = \ul pow\ulnone (2, (\ul vec\ulnone [1]-1)) - 1;\
+    val = val | mask;               \cf2 //Add the \ul \ulc2 vec\ulnone [1]-1 1's in the LSB\cf0 \
+    \
+    cout << \cf4 "Number is "\cf0  << \cf5 bitset\cf0 <32>(num) << \cf4 " and the next number is "\cf0  << \cf5 bitset\cf0 <32>(val) << endl;\
+    \
+    \cf2 //GetPrev\cf0 \
+    val = num;\
+    index = (\ul vec\ulnone [0] == 0) ? (\ul vec\ulnone [1]+\ul vec\ulnone [2]) : \ul vec\ulnone [0];   \cf2 //Find the location of the first non-streaming 1\cf0 \
+    mask = 
+\f1\b \cf6 pow
+\f0\b0 \cf0 (2, index+1) - 1;                         \cf2 //Mask for index to 0 and Clear all bits from 0 to (index-1)\cf0 \
+    mask = ~mask;      \
+    val = val&mask;                                     \cf2 //Set bits from 0 to index as 0.\cf0 \
+    mask = (\ul vec\ulnone [0] == 0) ? \ul pow\ulnone (2, \ul vec\ulnone [1]+1) - 1 : 1;   \cf2 //We need as many 1's as between 0-(index-1)+1\cf0 \
+    
+\f1\b \cf3 int
+\f0\b0 \cf0  shift = (\ul vec\ulnone [0] == 0) ? \ul vec\ulnone [2]-1 : \ul vec\ulnone [0]-1;   \cf2 //We shift by as many 0's between 0-(index-1) - 1\cf0 \
+    mask = mask << shift;                               \cf2 //Insert \ul vec\ulnone [0]-1 0's on the left\cf0 \
+    val = val | mask;\
+    cout << \cf4 "Number is "\cf0  << \cf5 bitset\cf0 <32>(num) << \cf4 " and the \ul \ulc4 prev\ulnone  number is "\cf0  << \cf5 bitset\cf0 <32>(val) << endl;\
+\}\
+\
+
+\f1\b \cf3 void
+\f0\b0 \cf0  
+\f1\b myClass :: getNumArith
+\f0\b0 (
+\f1\b \cf3 int
+\f0\b0 \cf0  num) \{\
+    
+\f1\b \cf3 int
+\f0\b0 \cf0  val = num;\
+    \
+    \cf2 //GetNext\cf0 \
+    val += \ul pow\ulnone (2, \ul vec\ulnone [0]);        \cf2 //Add to the number such that there is 1 at index and 0's after\cf0 \
+    val += \ul pow\ulnone (2, \ul vec\ulnone [1]-1) - 1;    \cf2 //Add to the number such that there are (\ul \ulc2 vec\ulnone [1]-1) 1's on the right\cf0 \
+    cout << \cf4 "Number is "\cf0  << \cf5 bitset\cf0 <32>(num) << \cf4 " and the next number is "\cf0  << \cf5 bitset\cf0 <32>(val) << endl;\
+    \
+    \cf2 //GetPrev\cf0 \
+    val = num;\
+    
+\f1\b \cf3 int
+\f0\b0 \cf0  sub = (\ul vec\ulnone [0] == 0) ? \ul pow\ulnone (2, \ul vec\ulnone [1]) - 1 : 0 ;\
+    val = val - sub;                \cf2 //Subtract from number such that there is 1 at index and 0's after\cf0 \
+    val = val - 1;                  \cf2 //Subtract 1 to get 0 at index followed by all 1's \cf0 \
+    cout << \cf4 "\ul \ulc4 Val\ulnone  is "\cf0  << val << endl;\
+    sub = (\ul vec\ulnone [0] == 0) ? \ul pow\ulnone (2, \ul vec\ulnone [2]-1) - 1 : \ul pow\ulnone (2, \ul vec\ulnone [0]-1) - 1;\
+    val = val - sub;    \cf2 //Eliminate \ul \ulc2 vec\ulnone [0]-1 1's \cf0 \
+    cout << \cf4 "Number is "\cf0  << \cf5 bitset\cf0 <32>(num) << \cf4 " and the \ul \ulc4 prev\ulnone  number is "\cf0  << \cf5 bitset\cf0 <32>(val) << endl;\
+\
+\}\
+\
+
+\f1\b \cf3 int
+\f0\b0 \cf0  
+\f1\b main
+\f0\b0 () \{\
+    \
+    \cf5 myClass\cf0  obj;\
+    
+\f1\b \cf3 int
+\f0\b0 \cf0  x = 19; \cf2 //NOTE the difference for 15, 7 etc.\cf0 \
+    cout << endl << \cf4 "------Binary Manipulation------"\cf0  << endl;\
+    obj.getNumBin(x);\
+    cout << endl << \cf4 "------Arithmetic Manipulation------"\cf0  << endl;\
+    obj.getNumArith(x);\
+\
+    
+\f1\b \cf3 return
+\f0\b0 \cf0  0;\
+\}\
+}
