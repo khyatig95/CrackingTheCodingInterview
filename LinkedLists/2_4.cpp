@@ -24,7 +24,7 @@ void myClass<T> :: doPartition(T partition) {
             tempdata = temp->data;
             n->next = n->next->next;
             skip = true;
-            this->deleteNode(temp);  //Delete the node
+            delete temp;  //Delete the node
             this->insertNode(tempdata); //Insert at head (leftmost)
         } else
             skip = false;
