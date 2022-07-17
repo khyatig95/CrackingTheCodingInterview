@@ -3,16 +3,13 @@
 //				1GB of memory => 2^30bytes = 8*2^30 bits = 2^33bits.
 //				If we set a bit for a number, we only need 2 billion bits = 2^30 to return a missing number
 //				Follow-up -
-//				We have 10MB and the integers are not unique
-//				1) Consider an array that stores the count of numbers within each block
+//				We have 10MB and the integers are distinct (no repetitions)
+//				1) Consider an array that stores the count of numbers within a particular range, say 0-999, 1000-1999 and so on
 //				Size of array = Total mem/Size of each element <= 8*2^20bytes/4bytes <= 2^21
 //				Size of block/range = Total numbers/Number of blocks = 2^31/2^21 >= 2^10 (greater than as max number of blocks used)
 //				Whenever the count of a block < block size => number is missing there.
 //				To find the missing number in the block -
-//				2) We have 10MB = 2^6*2^20 bits
-//				=> block size <= 2^26
-//				Hence, 2^10 <= block size <= 2^26
-//				To use less memory, pick a number in middle.
+//				2) Use the bit vector approach from before.
 //Time Complexity : O(N)
 //Assumption : Only +ve integers are handled
 
