@@ -40,6 +40,7 @@ void myClass :: DrawLine(int x1, int x2, int y) {
             start++;
         }
         //x2 : You can also generate as many 1's as 0's and then just flip. No shift needed
+        //  Use setting the MSB bit logic from one_note =>ISSUE
         shift = 7 - x2%8;
         super = 8 - shift;
         val = pow(2, super) - 1;
