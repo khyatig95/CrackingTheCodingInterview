@@ -1,331 +1,137 @@
-{\rtf1\ansi\ansicpg1252\cocoartf1348\cocoasubrtf170
-{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;\f1\fnil\fcharset0 Menlo-Bold;}
-{\colortbl;\red255\green255\blue255;\red63\green127\blue95;\red127\green0\blue85;\red42\green0\blue255;
-\red0\green80\blue50;\red0\green0\blue192;\red100\green40\blue128;}
-\margl1440\margr1440\vieww10800\viewh8400\viewkind0
-\deftab720
-\pard\pardeftab720
+//Algorithm : 	Number all chopsticks. You first pick up the lower numbered chopstick. If the higher numbered
+//				chopstick exists, pick up and eat. Else release the lowered chopstick as well.
+//
+//				Avoids deadlock as all philosophers will first pick up left and then right except for the last.
+//				This breaks the chain. With this solution, a philosopher can never hold the larger chopstick
+// 				without holding the smaller one. This prevents the ability to have a cycle,
+// 				since a cycle means that a higher chopstick would "point"to a lower one.
 
-\f0\fs24 \cf2 //Algorithm : 	Number all \ul chopsticks\ulnone . You first pick up the lower numbered \ul chopstick\ulnone . If the higher numbered\cf0 \
-\cf2 //				\ul chopstick\ulnone  exists, pick up and eat. Else release the lowered \ul chopstick\ulnone  as well.\cf0 \
-\cf2 //\cf0 \
-\cf2 //				Avoids deadlock as all philosophers will first pick up left and then right except for the last.\cf0 \
-\cf2 //				This breaks the chain. With this solution, a philosopher can never hold the larger \ul chopstick\cf0 \ulnone \
-\cf2 // 				without holding the smaller one. This prevents the ability to have a cycle,\cf0 \
-\cf2 // 				since a cycle means that a higher \ul chopstick\ulnone  would "point"to a lower one.\cf0 \
-\
-\pard\pardeftab720
+#include <mutex>
+#include <thread>
+#include <unistd.h>
+#include <iostream>
+#include <vector>
+using namespace std;
+//even
+//odd
+#define numPhilosophers 5
 
-\f1\b \cf3 #include
-\f0\b0 \cf0  \cf4 <mutex>\cf0 \
 
-\f1\b \cf3 #include
-\f0\b0 \cf0  \cf4 <thread>\cf0 \
+class Chopstick {
+private :
+	int id;
+	mutex avail;
 
-\f1\b \cf3 #include
-\f0\b0 \cf0  \cf4 <unistd.h>\cf0 \
+public :
+	Chopstick(int val) {
+		id = val;
+		avail.unlock();
+	}
+	bool pickUp() {
+		return(avail.try_lock()); //Returns true if it is able to lock
+	}
+	void putDown() { //Only call putDown if it was able to pick up.
+		avail.unlock();
+	}
+	int getID() {
+		return(id);
+	}
+};
 
-\f1\b \cf3 #include
-\f0\b0 \cf0  \cf4 <iostream>\cf0 \
+class Philosopher {
+private :
+	Chopstick* smaller;
+	Chopstick* larger;
+	int numBites;
+	int id;
 
-\f1\b \cf3 #include
-\f0\b0 \cf0  \cf4 <vector>\cf0 \
+	bool doneEating;
+	bool pickUp();
+	void putDown();
+	void chew();
 
-\f1\b \cf3 using
-\f0\b0 \cf0  
-\f1\b \cf3 namespace
-\f0\b0 \cf0  std;\
-\pard\pardeftab720
-\cf2 //even\cf0 \
-\cf2 //odd\cf0 \
-\pard\pardeftab720
+public :
+	Philosopher(Chopstick* left, Chopstick* right, int id);
+	void eat();
+	int getID() {
+		return(id);
+	}
+};
 
-\f1\b \cf3 #define
-\f0\b0 \cf0  numPhilosophers 5\
-\
-\
+Philosopher :: Philosopher(Chopstick* left, Chopstick* right, int index) {
+	id = index;
+	if (left->getID() < right->getID()) {
+		smaller = left;
+		larger = right;
+	} else {
+		larger = left;
+		smaller = right;
+	}
+	doneEating = false;
+	numBites = 10;
+	cout << "Create Philospher " << id << " with smaller chopstick=" << smaller->getID() << " and larger chopstick=" << larger->getID() << endl;
+}
 
-\f1\b \cf3 class
-\f0\b0 \cf0  \cf5 Chopstick\cf0  \{\
+bool Philosopher :: pickUp() {
+	//Try to pickup lower chopstick first
+	if (smaller->pickUp()) {
+		if (larger->pickUp()) {
+			return true;
+		} else {
+			smaller->putDown();
+			return false;
+		}
+	} else {
+		return false;
+	}
+}
 
-\f1\b \cf3 private
-\f0\b0 \cf0  :\
-	
-\f1\b \cf3 int
-\f0\b0 \cf0  \cf6 id\cf0 ;\
-	\cf5 mutex\cf0  \cf6 avail\cf0 ;\
-\
+void Philosopher :: putDown() {
+	//Put Down the larger chopstick first
+	larger->putDown();
+	smaller->putDown();
+}
 
-\f1\b \cf3 public
-\f0\b0 \cf0  :\
-	
-\f1\b Chopstick
-\f0\b0 (
-\f1\b \cf3 int
-\f0\b0 \cf0  val) \{\
-		\cf6 id\cf0  = val;\
-		\cf6 avail\cf0 .
-\f1\b \cf7 unlock
-\f0\b0 \cf0 ();\
-	\}\
-	
-\f1\b \cf3 bool
-\f0\b0 \cf0  
-\f1\b pickUp
-\f0\b0 () \{\
-		
-\f1\b \cf3 return
-\f0\b0 \cf0 (\cf6 avail\cf0 .
-\f1\b \cf7 try_lock
-\f0\b0 \cf0 ()); \cf2 //Returns true if it is able to lock\cf0 \
-	\}\
-	
-\f1\b \cf3 void
-\f0\b0 \cf0  
-\f1\b putDown
-\f0\b0 () \{ \cf2 //Only call putDown if it was able to pick up.\cf0 \
-		\cf6 avail\cf0 .
-\f1\b \cf7 unlock
-\f0\b0 \cf0 ();\
-	\}\
-	
-\f1\b \cf3 int
-\f0\b0 \cf0  
-\f1\b getID
-\f0\b0 () \{\
-		
-\f1\b \cf3 return
-\f0\b0 \cf0 (\cf6 id\cf0 );\
-	\}\
-\};\
-\
+void Philosopher :: chew() {
+	for (int i=0; i<numBites; i++)
+		usleep(1000);
+}
 
-\f1\b \cf3 class
-\f0\b0 \cf0  \cf5 Philosopher\cf0  \{\
+void Philosopher :: eat() {
+	while(!doneEating) {
+		if (pickUp()) {
+			chew();
+			putDown();
+			doneEating = true;
+			cout << "Finished eating for Philosopher " << id << " with smaller chopstick " << smaller->getID() << " and larger chopstick " << larger->getID() << endl;
+		} else {
+			doneEating = false;
+		}
+	}
+}
 
-\f1\b \cf3 private
-\f0\b0 \cf0  :\
-	\cf5 Chopstick\cf0 * \cf6 smaller\cf0 ;\
-	\cf5 Chopstick\cf0 * \cf6 larger\cf0 ;\
-	
-\f1\b \cf3 int
-\f0\b0 \cf0  \cf6 numBites\cf0 ;\
-	
-\f1\b \cf3 int
-\f0\b0 \cf0  \cf6 id\cf0 ;\
-\
-	
-\f1\b \cf3 bool
-\f0\b0 \cf0  \cf6 doneEating\cf0 ;\
-	
-\f1\b \cf3 bool
-\f0\b0 \cf0  
-\f1\b pickUp
-\f0\b0 ();\
-	
-\f1\b \cf3 void
-\f0\b0 \cf0  
-\f1\b putDown
-\f0\b0 ();\
-	
-\f1\b \cf3 void
-\f0\b0 \cf0  
-\f1\b chew
-\f0\b0 ();\
-\
+int main() {
+	vector<thread> threads;
 
-\f1\b \cf3 public
-\f0\b0 \cf0  :\
-	
-\f1\b Philosopher
-\f0\b0 (\cf5 Chopstick\cf0 * left, \cf5 Chopstick\cf0 * right, 
-\f1\b \cf3 int
-\f0\b0 \cf0  id);\
-	
-\f1\b \cf3 void
-\f0\b0 \cf0  
-\f1\b eat
-\f0\b0 ();\
-	
-\f1\b \cf3 int
-\f0\b0 \cf0  
-\f1\b getID
-\f0\b0 () \{\
-		
-\f1\b \cf3 return
-\f0\b0 \cf0 (\cf6 id\cf0 );\
-	\}\
-\};\
-\
-\pard\pardeftab720
+	Philosopher* p[numPhilosophers];
+	Chopstick*	c[numPhilosophers];
 
-\f1\b \cf0 Philosopher :: Philosopher
-\f0\b0 (\cf5 Chopstick\cf0 * left, \cf5 Chopstick\cf0 * right, 
-\f1\b \cf3 int
-\f0\b0 \cf0  index) \{\
-	\cf6 id\cf0  = index;\
+	for (int i=0; i<numPhilosophers; i++) {
+		c[i] = new Chopstick(i);
+	}
+	for (int i=0; i<numPhilosophers; i++) {
+		int left_id = i;
+		int right_id = (i-1 < 0) ? (numPhilosophers-1) : i-1;
+		p[i] = new Philosopher(c[left_id], c[right_id], i);
+	}
 	
-\f1\b \cf3 if
-\f0\b0 \cf0  (left->getID() < right->getID()) \{\
-		\cf6 smaller\cf0  = left;\
-		\cf6 larger\cf0  = right;\
-	\} 
-\f1\b \cf3 else
-\f0\b0 \cf0  \{\
-		\cf6 larger\cf0  = left;\
-		\cf6 smaller\cf0  = right;\
-	\}\
-	\cf6 doneEating\cf0  = 
-\f1\b \cf3 false
-\f0\b0 \cf0 ;\
-	\cf6 numBites\cf0  = 10;\
-	cout << \cf4 "Create \ul Philospher\ulnone  "\cf0  << \cf6 id\cf0  << \cf4 " with smaller \ul chopstick\ulnone ="\cf0  << \cf6 smaller\cf0 ->getID() << \cf4 " and larger \ul chopstick\ulnone ="\cf0  << \cf6 larger\cf0 ->getID() << endl;\
-\}\
-\
-\pard\pardeftab720
+	for (int i=0; i<numPhilosophers; i++) {
+		thread t(&Philosopher::eat, p[i]);
+		threads.push_back(move(t));
+	}
 
-\f1\b \cf3 bool
-\f0\b0 \cf0  
-\f1\b Philosopher :: pickUp
-\f0\b0 () \{\
-	\cf2 //Try to pickup lower \ul chopstick\ulnone  first\cf0 \
-	
-\f1\b \cf3 if
-\f0\b0 \cf0  (\cf6 smaller\cf0 ->pickUp()) \{\
-		
-\f1\b \cf3 if
-\f0\b0 \cf0  (\cf6 larger\cf0 ->pickUp()) \{\
-			
-\f1\b \cf3 return
-\f0\b0 \cf0  
-\f1\b \cf3 true
-\f0\b0 \cf0 ;\
-		\} 
-\f1\b \cf3 else
-\f0\b0 \cf0  \{\
-			\cf6 smaller\cf0 ->putDown();\
-			
-\f1\b \cf3 return
-\f0\b0 \cf0  
-\f1\b \cf3 false
-\f0\b0 \cf0 ;\
-		\}\
-	\} 
-\f1\b \cf3 else
-\f0\b0 \cf0  \{\
-		
-\f1\b \cf3 return
-\f0\b0 \cf0  
-\f1\b \cf3 false
-\f0\b0 \cf0 ;\
-	\}\
-\}\
-\
-
-\f1\b \cf3 void
-\f0\b0 \cf0  
-\f1\b Philosopher :: putDown
-\f0\b0 () \{\
-	\cf2 //Put Down the larger \ul chopstick\ulnone  first\cf0 \
-	\cf6 larger\cf0 ->putDown();\
-	\cf6 smaller\cf0 ->putDown();\
-\}\
-\
-
-\f1\b \cf3 void
-\f0\b0 \cf0  
-\f1\b Philosopher :: chew
-\f0\b0 () \{\
-	
-\f1\b \cf3 for
-\f0\b0 \cf0  (
-\f1\b \cf3 int
-\f0\b0 \cf0  i=0; i<\cf6 numBites\cf0 ; i++)\
-		
-\f1\b \cf7 usleep
-\f0\b0 \cf0 (1000);\
-\}\
-\
-
-\f1\b \cf3 void
-\f0\b0 \cf0  
-\f1\b Philosopher :: eat
-\f0\b0 () \{\
-	
-\f1\b \cf3 while
-\f0\b0 \cf0 (!\cf6 doneEating\cf0 ) \{\
-		
-\f1\b \cf3 if
-\f0\b0 \cf0  (pickUp()) \{\
-			chew();\
-			putDown();\
-			\cf6 doneEating\cf0  = 
-\f1\b \cf3 true
-\f0\b0 \cf0 ;\
-			cout << \cf4 "Finished eating for Philosopher "\cf0  << \cf6 id\cf0  << \cf4 " with smaller \ul chopstick\ulnone  "\cf0  << \cf6 smaller\cf0 ->getID() << \cf4 " and larger \ul chopstick\ulnone  "\cf0  << \cf6 larger\cf0 ->getID() << endl;\
-		\} 
-\f1\b \cf3 else
-\f0\b0 \cf0  \{\
-			\cf6 doneEating\cf0  = 
-\f1\b \cf3 false
-\f0\b0 \cf0 ;\
-		\}\
-	\}\
-\}\
-\
-
-\f1\b \cf3 int
-\f0\b0 \cf0  
-\f1\b main
-\f0\b0 () \{\
-	\cf5 vector\cf0 <\cf5 thread\cf0 > threads;\
-\
-	\cf5 Philosopher\cf0 * p[numPhilosophers];\
-	\cf5 Chopstick\cf0 *	c[numPhilosophers];\
-\
-	
-\f1\b \cf3 for
-\f0\b0 \cf0  (
-\f1\b \cf3 int
-\f0\b0 \cf0  i=0; i<numPhilosophers; i++) \{\
-		c[i] = 
-\f1\b \cf3 new
-\f0\b0 \cf0  \cf5 Chopstick\cf0 (i);\
-	\}\
-	
-\f1\b \cf3 for
-\f0\b0 \cf0  (
-\f1\b \cf3 int
-\f0\b0 \cf0  i=0; i<numPhilosophers; i++) \{\
-		
-\f1\b \cf3 int
-\f0\b0 \cf0  left_id = i;\
-		
-\f1\b \cf3 int
-\f0\b0 \cf0  right_id = (i-1 < 0) ? (numPhilosophers-1) : i-1;\
-		p[i] = 
-\f1\b \cf3 new
-\f0\b0 \cf0  \cf5 Philosopher\cf0 (c[left_id], c[right_id], i);\
-	\}\
-	\
-	
-\f1\b \cf3 for
-\f0\b0 \cf0  (
-\f1\b \cf3 int
-\f0\b0 \cf0  i=0; i<numPhilosophers; i++) \{\
-		\cf5 thread\cf0  t(&\cf5 Philosopher\cf0 ::eat, p[i]);\
-		threads.push_back(move(t));\
-	\}\
-\
-	
-\f1\b \cf3 for
-\f0\b0 \cf0  (
-\f1\b \cf3 int
-\f0\b0 \cf0  i=0; i<numPhilosophers; i++) \{\
-		threads[i].join();\
-	\}\
-	
-\f1\b \cf3 return
-\f0\b0 \cf0  0;\
-\}\
+	for (int i=0; i<numPhilosophers; i++) {
+		threads[i].join();
+	}
+	return 0;
 }
